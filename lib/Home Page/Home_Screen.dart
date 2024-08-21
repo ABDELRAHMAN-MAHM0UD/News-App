@@ -1,12 +1,19 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:news/API/apiManager.dart';
+import 'package:news/Home%20Page/categoryFragment.dart';
+import 'package:news/Home%20Page/settingsTap.dart';
 import 'package:news/colors.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:news/darwer/homeDrawer.dart';
 import 'package:news/model/SourceResponse.dart';
 import 'package:news/taps/taps.dart';
+
+import '../model/Category.dart';
+import 'category details/category details.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -28,60 +35,43 @@ class _HomeScreenState extends State<HomeScreen> {
           borderRadius: BorderRadius.only(bottomLeft: Radius.circular(50),
               bottomRight:Radius.circular(50))
         ),
-        leading:
-           IconButton(icon: Icon(Icons.table_rows,color: appColors.white,) ,onPressed:(){},
-        ),
-        title: Text(AppLocalizations.of(context)!.news,
+
+        title: Text(
+          selectedCategory==null?
+          AppLocalizations.of(context)!.news:
+          selectedCategory!.title
+          ,
           style: Theme.of(context).textTheme.titleMedium,),
         actions: [Container(
             margin: EdgeInsets.symmetric(horizontal: 25),
             child: Icon(Icons.search,color: appColors.white,))],
         centerTitle: true,
       ) ,
-      body: FutureBuilder<SourceResponse?>(
-        future: APIManager.gerSources(),
-        builder:(context , snapshot){
-          if(snapshot.connectionState == ConnectionState.waiting){
-            return Center(child: CircularProgressIndicator(
-            color: appColors.primaryColor,));
-        }
-        else if(snapshot.hasError){
-          return Expanded(
-            child: Column(
-              children: [
-                Text("Something went wrong"),
-                ElevatedButton(onPressed: (){
-                  setState(() {
-                    APIManager.gerSources();
-                  });
-                },
-                      child: Text("Try again"))
-              ],
-            ),
-          );
-          }
-        if(snapshot.data!.status != 'ok'){
-          return Expanded(
-            child: Column(
-              children: [
-                Text(snapshot.data!.messege!),
-                ElevatedButton(onPressed: (){
-                  setState(() {
-                    APIManager.gerSources();
-                  });
-                },
-                    child: Text("Try again"))
-              ],
-            ),
-          );
-        }
-        var sourceList = snapshot.data!.sources!;
+      drawer: Drawer(
+          child: HomeDrawer(onSideMenuClick:onSideMenuClick ,)),
 
-            return Taps(sourceList: sourceList);
-
-        },
-      ),
+      body:selectedMenuItem ==  HomeDrawer.settings?
+      Settingstap():
+      selectedCategory == null?
+      Categoryfragment  (onCategoryItemClick: onCategoryItemClick):
+          CategoryDetails(category: selectedCategory!,)
 
     );
+  }
+  Cateigory? selectedCategory;
+  void onCategoryItemClick(Cateigory newCategory){
+    selectedCategory = newCategory;
+    setState(() {
+
+    });
+  }
+  int selectedMenuItem=HomeDrawer.categories;
+  onSideMenuClick(int newSideMenu){
+  selectedMenuItem =newSideMenu;
+  selectedCategory = null;
+  Navigator.pop(context);
+  setState(() {
+
+  });
   }
 }

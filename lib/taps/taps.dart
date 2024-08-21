@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:news/Home%20Page/newsWidget.dart';
 import 'package:news/model/SourceResponse.dart';
 import 'package:news/taps/OneTab.dart';
+
+import '../Home Page/News_Widget/newsWidget.dart';
 
 class Taps extends StatefulWidget {
   List<Sources> sourceList ;
@@ -35,7 +36,8 @@ class _TapsState extends State<Taps> {
                   source: Sources,
                   isSelected: selectedIndex== widget.sourceList.indexOf(Sources))).toList()
             ),
-            Expanded(child: NewsWidget(source: widget.sourceList[selectedIndex]))
+            Expanded(child:
+            NewsWidget(source: widget.sourceList[selectedIndex]))
           ],
         ));
   }
