@@ -38,7 +38,7 @@ class _NewsWidgetState extends State<NewsWidget> {
     if(viewModel.errorMessage != null){
     return Column(
     children: [
-    Text("${viewModel.errorMessage!} this is"),
+    Text(viewModel.errorMessage!),
     ElevatedButton(
     onPressed: () {
     setState(() {
@@ -61,7 +61,7 @@ class _NewsWidgetState extends State<NewsWidget> {
     else{
     return ListView.builder(
     itemBuilder: (context, index) {
-    News(articles: viewModel.newList![index]);
+    return News(articles: viewModel.newList![index]);
     },
     itemCount: viewModel.newList!.length,
     );
